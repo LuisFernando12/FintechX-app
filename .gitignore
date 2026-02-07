@@ -1,0 +1,7 @@
+node_modules/
+dist/
+mysql_data/
+src/db/schemas_full/
+compose.yaml
+.env
+.DS_Store

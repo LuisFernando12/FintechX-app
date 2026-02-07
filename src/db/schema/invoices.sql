@@ -1,0 +1,1 @@
+invoices(id, order_id, invoice_date, due_date, tax, shipping, amount_due) [FK: orders.id]

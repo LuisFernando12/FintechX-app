@@ -1,0 +1,1 @@
+inventory_transactions(id, transaction_type, transaction_created_date, transaction_modified_date, product_id, quantity, purchase_order_id, customer_order_id, comments) [FK: orders.id, products.id, purchase_orders.id, inventory_transaction_types.id]
