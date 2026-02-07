@@ -1,4 +1,10 @@
-import { Injectable, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import Redis from 'ioredis';
 import { EnvService } from './env.service';
 
@@ -7,6 +13,7 @@ export class RedisService
   extends Redis
   implements OnModuleInit, OnModuleDestroy
 {
+  private readonly logger = new Logger(RedisService.name);
   constructor(private readonly envService: EnvService) {
     super({
       host: envService.RedisHost,
@@ -17,13 +24,14 @@ export class RedisService
   async onModuleInit() {
     try {
       await this.ping();
-      console.log('Redis connected');
+      this.logger.log('Redis connected');
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
+      throw new InternalServerErrorException('Error connecting to Redis');
     }
   }
   async onModuleDestroy() {
     await this.quit();
-    console.log('Redis disconnect');
+    this.logger.warn('Redis disconnect');
   }
 }

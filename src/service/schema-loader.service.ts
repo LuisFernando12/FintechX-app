@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { readFile, readdir } from 'node:fs/promises';
 import { join } from 'path';
 export interface SchemaInfo {
@@ -10,6 +14,7 @@ export interface SchemaInfo {
 export class SchemaService {
   private readonly schemaDIR: string;
   private readonly documentationDIR: string;
+  private readonly logger = new Logger(SchemaService.name);
   constructor() {
     this.schemaDIR = './src/db/schema';
     this.documentationDIR = './src/knowledge';
@@ -21,7 +26,7 @@ export class SchemaService {
     try {
       schemaContent = await readFile(schemaPath, 'utf-8');
     } catch (error: any) {
-      console.log(error);
+      this.logger.error('Error loading schema:', JSON.stringify(error));
       throw new InternalServerErrorException(
         `Error loading schema${schema}: ${error}`,
       );
@@ -30,7 +35,7 @@ export class SchemaService {
     try {
       documentationContent = await readFile(documentationPath, 'utf-8');
     } catch (error: any) {
-      console.log(error);
+      this.logger.error('Error loading documentation: ', JSON.stringify(error));
       throw new InternalServerErrorException(
         `Error loading documentation ${schema}: ${error}`,
       );
@@ -46,7 +51,7 @@ export class SchemaService {
     try {
       schemaFiles = await readdir(this.schemaDIR);
     } catch (error) {
-      console.log(error);
+      this.logger.error('Error loading all schemas: ', JSON.stringify(error));
       throw new InternalServerErrorException(
         `Error loading schematics: ${error}`,
       );
@@ -66,20 +71,20 @@ export class SchemaService {
     for (const table of tables) {
       schemas.push(await this.loadSchema(table));
     }
-    console.log('Start create context for prompt');
+    this.logger.verbose('Start create context for prompt');
     let context = '#Database Schema and Documentation Context:\n\n';
     for (const schemaInfo of schemas) {
       context += `##Table: ${schemaInfo.table}\n\n`;
       if (schemaInfo.documentation) {
-        console.log(`Add documentation of ${schemaInfo.table}`);
+        this.logger.verbose(`Add documentation of ${schemaInfo.table}`);
         context += `###Documentation: ${schemaInfo.documentation}\n\n`;
       }
       if (schemaInfo.schema) {
-        console.log(`Add schema of ${schemaInfo.table}`);
+        this.logger.verbose(`Add schema of ${schemaInfo.table}`);
         context += `### Structure SQL\n\`\`\`sql\n${schemaInfo.schema}\n\`\`\`\n\n: ${schemaInfo.schema}\n\n`;
       }
     }
-    console.log(`Successfully created context for prompt`);
+    this.logger.verbose(`Successfully created context for prompt`);
     return context;
   }
   async getSummaryOfSchemas(): Promise<string> {

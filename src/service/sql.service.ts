@@ -1,10 +1,15 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { systemPrompt } from '../constants/systemPromp';
 import { AIService } from './ai.service';
 import { DatabaseService } from './database.service';
 import { EnvService } from './env.service';
 @Injectable()
 export class SQLService {
+  private readonly logger = new Logger(SQLService.name);
   constructor(
     private readonly aiService: AIService,
     private readonly envService: EnvService,
@@ -45,11 +50,11 @@ export class SQLService {
     ];
     for (const word of DRANGEROUS_WORDS) {
       if (!sql.startsWith('SELECT') && !sql.startsWith('WITH')) {
-        console.log('SQL dont start with "WITH" or "SELECT"');
+        this.logger.fatal('SQL dont start with "WITH" or "SELECT"');
         return false;
       }
       if (sql.includes(word)) {
-        console.log(`SQL contains dangerous word: ${word}`);
+        this.logger.fatal(`SQL contains dangerous word: ${word}`);
         return false;
       }
     }
@@ -79,8 +84,8 @@ export class SQLService {
       const resultQueryRun = await this.databaseService.queryRun(sql);
       return resultQueryRun;
     } catch (error: any) {
-      console.log(`Error executing SQL query:\n\n ${sql}\n\n `);
-      console.log(`Error: ${error}`);
+      this.logger.error(`Error executing SQL query:\n\n ${sql}\n\n `);
+      this.logger.warn(`Error: ${error}`);
       throw new InternalServerErrorException('Error executing SQL query');
     }
   }
@@ -106,7 +111,7 @@ export class SQLService {
       });
       return explanation;
     } catch (error: any) {
-      console.log(`Error on explaining: ${error}`);
+      this.logger.error(`Error on explaining:`, JSON.stringify(error));
       throw new InternalServerErrorException('Error explaining result query');
     }
   }

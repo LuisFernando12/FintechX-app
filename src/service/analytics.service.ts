@@ -1,5 +1,9 @@
 import { AIService } from '@/service/ai.service';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import { systemPrompt } from '../constants/systemPromp';
 import { ProcessNaturalLanguageQueryResponseDTO } from '../dto/analytics.dto';
 import { EnvService } from './env.service';
@@ -16,6 +20,7 @@ export interface ISQLResult {
 
 @Injectable()
 export class AnalyticsService {
+  private readonly logger = new Logger(AnalyticsService.name);
   constructor(
     private readonly aiService: AIService,
     private readonly envService: EnvService,
@@ -28,14 +33,13 @@ export class AnalyticsService {
   ): Promise<ProcessNaturalLanguageQueryResponseDTO> {
     const hasCahed = await this.redisService.get(prompt);
     if (hasCahed) {
+      this.logger.log('Returning from cache');
       return JSON.parse(hasCahed) as ProcessNaturalLanguageQueryResponseDTO;
     }
     const relevantTables = await this.relevantTables(prompt);
-    console.log(`Relevant tables: ${JSON.stringify(relevantTables.tables)}`);
     const context = await this.schemaService.buildContextForPrompt(
       relevantTables.tables,
     );
-    console.log(`Context: ${context}`);
     const sqlGenerated = await this.sqlService.generateSQL(context, prompt);
     const sql = this.sqlService.clearSQL(sqlGenerated);
     if (!this.sqlService.validateSQL(sql)) {

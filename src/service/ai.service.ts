@@ -1,5 +1,9 @@
 import { EnvService } from '@/service/env.service';
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
 import OpenAI from 'openai';
 
 export interface IExecutePrompt {
@@ -11,6 +15,7 @@ export interface IExecutePrompt {
 @Injectable()
 export class AIService {
   private openAI: OpenAI;
+  private readonly logger = new Logger(AIService.name);
   constructor(private readonly envService: EnvService) {
     this.openAI = new OpenAI({
       baseURL: this.envService.AIBaseURL,
@@ -42,13 +47,13 @@ export class AIService {
       if (!response.choices[0].message.content) {
         throw new InternalServerErrorException('AI response has no content');
       }
-      console.log('Response AI OK ! ');
+      Logger.verbose('Response AI OK ! ');
       return response.choices[0].message.content
         .replace('```json', '')
         .replace('```', '')
         .replace('```', '');
     } catch (error: any) {
-      console.error('Error executing AI prompt:', error);
+      this.logger.error('Error executing AI prompt:', JSON.stringify(error));
       throw new InternalServerErrorException('Error executing AI prompt');
     }
   }

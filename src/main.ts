@@ -1,10 +1,16 @@
 import { AppModule } from '@/module/app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { ConsoleLogger, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: new ConsoleLogger({
+      prefix: 'FintechX',
+      logLevels: ['log', 'error', 'warn', 'debug', 'verbose'],
+    }),
+  });
+
   const config = new DocumentBuilder()
     .setTitle('FintechX')
     .setDescription('FintechX API Documentation')
@@ -12,6 +18,7 @@ async function bootstrap() {
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, documentFactory);
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -23,10 +30,15 @@ async function bootstrap() {
 }
 bootstrap()
   .then(() => {
-    console.log(
+    Logger.log(
       `Application is running on: http://localhost:${process.env.PORT ?? 3000}`,
+      'NestApplication',
     );
   })
   .catch((err) => {
-    console.error('Error starting application:', err);
+    Logger.error(
+      'Error starting application:',
+      JSON.stringify(err),
+      'NestApplication',
+    );
   });
