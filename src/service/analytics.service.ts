@@ -1,6 +1,7 @@
 import { AIService } from '@/service/ai.service';
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { systemPrompt } from '../constants/systemPromp';
+import { ProcessNaturalLanguageQueryResponseDTO } from '../dto/analytics.dto';
 import { EnvService } from './env.service';
 import { SchemaService } from './schema-loader.service';
 import { SQLService } from './sql.service';
@@ -20,7 +21,9 @@ export class AnalyticsService {
     private readonly schemaService: SchemaService,
     private readonly sqlService: SQLService,
   ) {}
-  async analize(prompt: string): Promise<ISQLResult> {
+  async analize(
+    prompt: string,
+  ): Promise<ProcessNaturalLanguageQueryResponseDTO> {
     const relevantTables = await this.relevantTables(prompt);
     const context = await this.schemaService.buildContextForPrompt(
       relevantTables.tables,

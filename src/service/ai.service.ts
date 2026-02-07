@@ -1,9 +1,5 @@
 import { EnvService } from '@/service/env.service';
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import OpenAI from 'openai';
 
 export interface IExecutePrompt {
@@ -27,7 +23,7 @@ export class AIService {
     systemPrompt,
   }: IExecutePrompt): Promise<string> {
     if (!model || !prompt || !systemPrompt) {
-      throw new BadRequestException(
+      throw new InternalServerErrorException(
         'Missing required parameters for AI prompt execution',
       );
     }
