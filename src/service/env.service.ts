@@ -31,4 +31,13 @@ export class EnvService {
   get DBName(): string {
     return this.configService.getOrThrow<string>('DB_NAME');
   }
+  get RedisHost(): string {
+    return this.configService.getOrThrow<string>('REDIS_HOST');
+  }
+  get RedisPort(): number {
+    return this.configService.getOrThrow<number>('REDIS_PORT');
+  }
+  get RedisPassword(): string {
+    return this.configService.getOrThrow<string>('REDIS_PASSWORD');
+  }
 }
