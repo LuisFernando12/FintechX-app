@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 export class ProcessNaturalLanguageQueryDTO {
   @ApiProperty()
   @IsNotEmpty()
@@ -10,11 +10,6 @@ export class ProcessNaturalLanguageQueryResponseDTO {
   @IsString()
   @ApiProperty()
   sql: string;
-  @IsNotEmpty()
-  @IsArray()
-  @IsString({ each: true })
-  @ApiProperty()
-  relevantTables: string[];
   @IsNotEmpty()
   @ApiProperty()
   result: object;

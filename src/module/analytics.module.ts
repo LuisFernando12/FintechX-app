@@ -4,11 +4,18 @@ import { AnalyticsService } from '@/service/analytics.service';
 import { RedisService } from '@/service/redis.service';
 import { SchemaService } from '@/service/schema-loader.service';
 import { Module } from '@nestjs/common';
+import { EmbeddingsService } from '../service/embeddings.service';
 import { SQLModule } from './sql.module';
 
 @Module({
   imports: [SQLModule],
   controllers: [AnalyticsController],
-  providers: [AnalyticsService, AIService, SchemaService, RedisService],
+  providers: [
+    AnalyticsService,
+    AIService,
+    SchemaService,
+    RedisService,
+    EmbeddingsService,
+  ],
 })
 export class AnalyticsModule {}

@@ -36,9 +36,5 @@ bootstrap()
     );
   })
   .catch((err) => {
-    Logger.error(
-      'Error starting application:',
-      JSON.stringify(err),
-      'NestApplication',
-    );
+    Logger.error('Error starting application:', err, 'NestApplication');
   });

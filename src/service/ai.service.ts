@@ -9,35 +9,38 @@ import OpenAI from 'openai';
 export interface IExecutePrompt {
   prompt: string;
   model: string;
-  systemPrompt: string;
+  systemPrompt?: string;
 }
-
 @Injectable()
 export class AIService {
-  private openAI: OpenAI;
+  private _openAI: OpenAI;
   private readonly logger = new Logger(AIService.name);
   constructor(private readonly envService: EnvService) {
-    this.openAI = new OpenAI({
+    this._openAI = new OpenAI({
       baseURL: this.envService.AIBaseURL,
       apiKey: this.envService.AIAPIKey,
     });
+  }
+
+  get openAI(): OpenAI {
+    return this._openAI;
   }
   async executePrompt({
     prompt,
     model,
     systemPrompt,
   }: IExecutePrompt): Promise<string> {
-    if (!model || !prompt || !systemPrompt) {
+    if (!model || !prompt) {
       throw new InternalServerErrorException(
         'Missing required parameters for AI prompt execution',
       );
     }
     try {
-      const response = await this.openAI.chat.completions.create({
+      const response = await this._openAI.chat.completions.create({
         model: model,
         temperature: 0.3,
         messages: [
-          { role: 'system', content: systemPrompt },
+          { role: 'system', content: systemPrompt || '' },
           {
             role: 'user',
             content: prompt,
