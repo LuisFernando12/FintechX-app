@@ -6,3 +6,4 @@ src/db/chroma/
 src/db/northwind.sql
 .env
 .DS_Store
+/chromaDB
