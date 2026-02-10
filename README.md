@@ -40,10 +40,9 @@ fintechx-app/
 │   ├── main.ts          # Bootstrap da aplicação
 │   └── modules/         # Módulos da aplicação (domínio)
 ├── dist/                # Build de produção
-├── mysql_data/          # Volume de dados do MySQL
 ├── .env                 # Variáveis de ambiente
 ├── .env.template        # Template de variáveis de ambiente
-├── docker-compose.yml   # Orquestração dos containers
+├── compose.yml         # Orquestração dos containers
 ├── Dockerfile           # Build da aplicação
 ├── package.json
 └── README.md
@@ -85,7 +84,7 @@ APP_PORT=3000
 
 ## ▶️ Executando o Projeto
 
-### 🔹 Rodando com Docker (recomendado)
+### 🔹 Rodando com Docker
 
 ```bash
 docker-compose up --build
@@ -95,6 +94,12 @@ A aplicação ficará disponível em:
 
 ```
 http://localhost:3000
+```
+
+Swagger disponível em:
+
+```
+http://localhost:3000/api/docs
 ```
 
 ---
@@ -142,8 +147,3 @@ Desenvolvedor Backend / Full Stack
 
 - GitHub: https://github.com/LuisFernando12
 
----
-
-## 📄 Licença
-
-Este projeto é de uso educacional e profissional, podendo ser adaptado conforme necessidade.
