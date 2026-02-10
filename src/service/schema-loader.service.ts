@@ -4,7 +4,9 @@ import {
   Logger,
 } from '@nestjs/common';
 import { readFile, readdir } from 'node:fs/promises';
+import path from 'node:path';
 import { join } from 'path';
+import { EnvService } from './env.service';
 export interface SchemaInfo {
   table: string;
   schema: string;
@@ -15,9 +17,16 @@ export class SchemaService {
   private readonly schemaDIR: string;
   private readonly documentationDIR: string;
   private readonly logger = new Logger(SchemaService.name);
-  constructor() {
-    this.schemaDIR = './src/db/schema';
-    this.documentationDIR = './src/knowledge';
+  constructor(private readonly envService: EnvService) {
+    const enviroment = this.envService.NodeEnv.toUpperCase();
+    this.schemaDIR = path.resolve(
+      process.cwd(),
+      enviroment === 'DEV' ? 'src/db/schema/' : 'dist/db/schema/',
+    );
+    this.documentationDIR = path.resolve(
+      process.cwd(),
+      enviroment === 'DEV' ? 'src/knowledge/' : 'dist/knowledge/',
+    );
   }
   async loadSchema(schema: string): Promise<SchemaInfo> {
     const schemaPath = join(this.schemaDIR, `${schema}.sql`);

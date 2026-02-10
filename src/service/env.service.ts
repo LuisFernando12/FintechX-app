@@ -50,4 +50,7 @@ export class EnvService {
   get ChromaPort(): number {
     return this.configService.getOrThrow<number>('CHROMA_PORT');
   }
+  get NodeEnv(): string {
+    return this.configService.getOrThrow<string>('NODE_ENV');
+  }
 }
