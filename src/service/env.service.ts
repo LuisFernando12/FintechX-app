@@ -4,11 +4,14 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class EnvService {
   constructor(private readonly configService: ConfigService) {}
+  get AIModel(): string {
+    return this.configService.getOrThrow<string>('AI_MODEL');
+  }
   get AIModelSQLGenerate(): string {
     return this.configService.getOrThrow<string>('AI_MODEL_SQL_GENERATE');
   }
-  get AIModel(): string {
-    return this.configService.getOrThrow<string>('AI_MODEL');
+  get AIModelEmbeddings(): string {
+    return this.configService.getOrThrow<string>('AI_MODEL_EMBEDDINGS');
   }
   get AIBaseURL(): string {
     return this.configService.getOrThrow<string>('AI_BASE_URL');
@@ -39,5 +42,12 @@ export class EnvService {
   }
   get RedisPassword(): string {
     return this.configService.getOrThrow<string>('REDIS_PASSWORD');
+  }
+
+  get ChromaHost(): string {
+    return this.configService.getOrThrow<string>('CHROMA_HOST');
+  }
+  get ChromaPort(): number {
+    return this.configService.getOrThrow<number>('CHROMA_PORT');
   }
 }

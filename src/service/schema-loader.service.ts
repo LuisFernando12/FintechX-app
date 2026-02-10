@@ -87,14 +87,26 @@ export class SchemaService {
     this.logger.verbose(`Successfully created context for prompt`);
     return context;
   }
-  async getSummaryOfSchemas(): Promise<string> {
+  async getSummaryOfSchemas(): Promise<string | string[]> {
     const schemas = await this.loadAllSchemas();
     if (schemas.length === 0) {
       throw new InternalServerErrorException('No schemas found');
     }
-    const sumaries = schemas.map((schema) => {
-      return `- **${schema.table}**: ${schema.documentation.substring(0, 700).trim()}${schema.documentation.length > 700 ? '...' : ''}`;
-    });
-    return sumaries.join('\n');
+    const sumaries = schemas.map(
+      ({ schema, documentation, table }: SchemaInfo) => {
+        return `
+        - **${table}**:
+
+          - **Documentation**:
+
+          ${documentation.substring(0, 700).trim()}${documentation.length > 700 ? '...' : ''}
+
+          - **Schema**:
+            ${schema}
+        `;
+      },
+    );
+    // return sumaries.join('\n');
+    return sumaries;
   }
 }

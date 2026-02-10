@@ -2,6 +2,7 @@ node_modules/
 dist/
 mysql_data/
 src/db/schemas_full/
-compose.yaml
+src/db/chroma/
+src/db/northwind.sql
 .env
 .DS_Store

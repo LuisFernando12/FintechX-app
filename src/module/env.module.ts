@@ -10,6 +10,7 @@ import { EnvService } from '../service/env.service';
       validationSchema: j.object({
         AI_MODEL: j.string().required(),
         AI_MODEL_SQL_GENERATE: j.string().default(''),
+        AI_MODEL_EMBEDDINGS: j.string().required(),
         AI_BASE_URL: j.string().required(),
         AI_API_KEY: j.string().default(''),
         DB_HOST: j.string().required(),
@@ -20,6 +21,8 @@ import { EnvService } from '../service/env.service';
         REDIS_HOST: j.string().required(),
         REDIS_PORT: j.number().required(),
         REDIS_PASSWORD: j.string().required(),
+        CHROMA_HOST: j.string().required(),
+        CHROMA_PORT: j.number().required(),
       }),
     }),
   ],
