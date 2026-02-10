@@ -23,6 +23,7 @@ import { EnvService } from '../service/env.service';
         REDIS_PASSWORD: j.string().required(),
         CHROMA_HOST: j.string().required(),
         CHROMA_PORT: j.number().required(),
+        NODE_ENV: j.string().required(),
       }),
     }),
   ],

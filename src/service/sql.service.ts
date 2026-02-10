@@ -50,7 +50,7 @@ export class SQLService {
     ];
     for (const word of DRANGEROUS_WORDS) {
       if (!sql.startsWith('SELECT') && !sql.startsWith('WITH')) {
-        this.logger.fatal('SQL dont start with "WITH" or "SELECT"');
+        this.logger.fatal('SQL dont start with "WITH" or "SELECT": ', sql);
         return false;
       }
       if (sql.includes(word)) {

@@ -46,11 +46,7 @@ export class EmbeddingsService implements OnModuleInit {
     });
   }
   async onModuleInit() {
-    this.logger.log('EmbeddingsService initialized');
-    const existsDocs = await this.vectorStore.collection?.count();
-    if (existsDocs === 0 || existsDocs === undefined) {
-      await this.embed();
-    }
+    await this.embed();
   }
 
   async embed(): Promise<boolean> {
